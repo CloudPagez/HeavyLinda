@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Заказ — Гусиные яйца</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="icon" href="logo.png">
+</head>
+<body class="bg-green-50 font-sans">
+  <header class="bg-green-700 text-white p-4">
+<div class="flex items-center justify-between max-w-6xl mx-auto">
+<h1 class="text-2xl font-bold">Заявка на яица</h1>
+<a href="index.html" class="underline">← Назад</a>
+</div>
+</header>
+  <div class="max-w-md mx-auto mt-10 bg-white p-6 rounded-lg shadow">
+    <h2 class="text-2xl font-bold mb-4">Заявка: Гусиные яйца</h2>
+    <label class="block mb-2">Имя:
+      <input id="name-eggs" type="text" class="w-full mt-1 p-2 border rounded">
+    </label>
+    <label class="block mb-4">Телефон:
+      <input id="phone-eggs" type="tel" class="w-full mt-1 p-2 border rounded">
+    </label>
+    <label class="block mt-3">Количество (яиц)</label>
+<input id="quantity-eggs" type="number" min="1" value="1" 
+class="w-full border p-2 rounded" oninput="calculatePrice('eggs')">
+<p class="mt-3 font-bold">
+Стоимость: <span id="price-eggs">2000</span> ₸
+</p>
+<input id="quantity-eggs" type="number" min="1" class="w-full border p-2 rounded" required>
+    <button onclick="sendToTelegram('eggs')" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">Отправить заявку</button>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <div class="text-green-600 text-4xl mb-2">✔️</div>
+      <p class="text-lg font-semibold">Заявка оформлена! дождитесь своей очереди</p>
+    </div>
+  </div>
+
+  <script>
+    function sendToTelegram(product) {
+
+const name = document.querySelector(`#name-${product}`).value;
+const phone = document.querySelector(`#phone-${product}`).value;
+const quantity = document.querySelector(`#quantity-${product}`).value;
+
+const message =
+`📝 Новая заявка
+👤 Имя: ${name}
+📞 Телефон: ${phone}
+📦 Товар: ${product === 'eggs' ? 'Яйца для инкубации' : 'Гусята'}
+🔢 Количество: ${quantity}`;
+
+fetch(`https://api.telegram.org/bot7745026642:AAHvs6V4ghHxBUQYOaqxRJkryuG7Cne3QQM/sendMessage`, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+chat_id: "1449170485",
+text: message
+})
+})
+.then(() => alert("Заявка оформлена!"))
+.catch(() => alert("Ошибка отправки."));
+}
+function calculatePrice(product){
+
+let quantity = document.querySelector(`#quantity-${product}`).value;
+
+let price = 0;
+
+if(product === "eggs"){
+price = quantity * 2000; // 1 яйцо = 2000
+}
+
+if(product === "chicks"){
+price = quantity * 4000;
+}
+
+document.querySelector(`#price-${product}`).textContent = price;
+
+}
+  </script>
+</body>
+</html>
